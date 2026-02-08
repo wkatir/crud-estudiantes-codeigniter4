@@ -1,39 +1,36 @@
 <?= $this->extend('layouts/main') ?>
 
-<?= $this->section('title') ?>Crear Alumno<?= $this->endSection() ?>
+<?= $this->section('title') ?>Agregar Alumno<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-    <h1 class="text-3xl font-bold mb-6">Crear Alumno</h1>
-
-    <div class="card bg-base-100 shadow-xl max-w-md">
-        <div class="card-body">
-            <form action="/alumnos/store" method="post">
-                <div class="form-control mb-4">
-                    <label class="label">
-                        <span class="label-text">Nombre</span>
-                    </label>
-                    <input type="text" name="nombre" class="input input-bordered" required>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Agregar Alumno</h3>
                 </div>
+                <div class="card-body">
+                    <form action="<?= base_url('alumnos/store') ?>" method="post">
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" name="nombre" class="form-control" required>
+                        </div>
 
-                <div class="form-control mb-4">
-                    <label class="label">
-                        <span class="label-text">Apellido</span>
-                    </label>
-                    <input type="text" name="apellido" class="input input-bordered" required>
-                </div>
+                        <div class="form-group">
+                            <label>Apellido</label>
+                            <input type="text" name="apellido" class="form-control" required>
+                        </div>
 
-                <div class="form-control mb-4">
-                    <label class="label">
-                        <span class="label-text">Teléfono</span>
-                    </label>
-                    <input type="text" name="telefono" class="input input-bordered" required>
-                </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="text" name="telefono" class="form-control" required>
+                        </div>
 
-                <div class="flex gap-2">
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                    <a href="/alumnos" class="btn btn-ghost">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <a href="<?= base_url('alumnos') ?>" class="btn btn-secondary">Cancelar</a>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 <?= $this->endSection() ?>
