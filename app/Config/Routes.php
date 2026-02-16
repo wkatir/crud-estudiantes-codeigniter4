@@ -13,3 +13,6 @@ $routes->post('/alumnos/store', 'Alumnos::store');
 $routes->get('/alumnos/edit/(:num)', 'Alumnos::edit/$1');
 $routes->post('/alumnos/update/(:num)', 'Alumnos::update/$1');
 $routes->get('/alumnos/delete/(:num)', 'Alumnos::delete/$1');
+
+$routes->get('/alumnosxcarrera', 'Alumnosxcarrera::index');
+$routes->post('/alumnosxcarrera/filtrar', 'Alumnosxcarrera::filtrar');

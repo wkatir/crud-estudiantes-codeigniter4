@@ -11,10 +11,30 @@
                     <a href="<?= base_url('alumnos/create') ?>" class="btn btn-primary">Agregar alumno</a>
                 </div>
                 <div class="card-body">
+
+                    <?php if (session()->getFlashdata('success')): ?>
+                        <div class="alert alert-success alert-dismissible fade show">
+                            <?= esc(session()->getFlashdata('success')) ?>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (session()->getFlashdata('error')): ?>
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <?= esc(session()->getFlashdata('error')) ?>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    <?php endif; ?>
+
                     <table id="registros" class="table table-bordered table-hover" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>Código</th>
                                 <th>Nombre</th>
                                 <th>Apellido</th>
                                 <th>Teléfono</th>
@@ -24,10 +44,11 @@
                         <tbody>
                             <?php foreach ($alumnos as $alumno): ?>
                             <tr>
-                                <td><?= $alumno['id'] ?></td>
-                                <td><?= $alumno['nombre'] ?></td>
-                                <td><?= $alumno['apellido'] ?></td>
-                                <td><?= $alumno['telefono'] ?></td>
+                                <td><?= esc($alumno['id']) ?></td>
+                                <td><?= esc($alumno['codigo']) ?></td>
+                                <td><?= esc($alumno['nombre']) ?></td>
+                                <td><?= esc($alumno['apellido']) ?></td>
+                                <td><?= esc($alumno['telefono']) ?></td>
                                 <td>
                                     <a href="<?= base_url('alumnos/edit/' . $alumno['id']) ?>" class="btn btn-warning btn-sm">Editar</a>
                                     <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modalEliminar" data-url="<?= base_url('alumnos/delete/' . $alumno['id']) ?>">Eliminar</button>
