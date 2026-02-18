@@ -16,3 +16,10 @@ $routes->get('/alumnos/delete/(:num)', 'Alumnos::delete/$1');
 
 $routes->get('/alumnosxcarrera', 'Alumnosxcarrera::index');
 $routes->post('/alumnosxcarrera/filtrar', 'Alumnosxcarrera::filtrar');
+
+$routes->get('/carreras', 'Carreras::index');
+$routes->get('/carreras/create', 'Carreras::create');
+$routes->post('/carreras/store', 'Carreras::store');
+$routes->get('/carreras/edit/(:segment)', 'Carreras::edit/$1');
+$routes->post('/carreras/update/(:segment)', 'Carreras::update/$1');
+$routes->get('/carreras/delete/(:segment)', 'Carreras::delete/$1');

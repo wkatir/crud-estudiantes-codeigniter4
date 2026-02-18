@@ -56,6 +56,18 @@
                             <?php endif; ?>
                         </div>
 
+                        <div class="form-group">
+                            <label>Carrera</label>
+                            <select name="codigo_carrera" class="form-control" required>
+                                <option value="">Seleccione una carrera...</option>
+                                <?php foreach($carreras as $c): ?>
+                                <option value="<?= $c->codigo_carrera ?>" <?= old('codigo_carrera') == $c->codigo_carrera ? 'selected' : '' ?>>
+                                    <?= $c->codigo_carrera ?> - <?= $c->nombre_carrera ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
                         <button type="submit" class="btn btn-primary">Guardar</button>
                         <a href="<?= base_url('alumnos') ?>" class="btn btn-secondary">Cancelar</a>
                     </form>

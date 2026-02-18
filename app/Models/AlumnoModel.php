@@ -8,9 +8,10 @@ class AlumnoModel extends Model
 {
     protected $table = 'alumnos';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['codigo', 'nombre', 'apellido', 'telefono'];
+    protected $allowedFields = ['codigo', 'nombre', 'apellido', 'telefono', 'codigo_carrera'];
 
     protected $validationRules = [
+        'id'       => 'permit_empty|is_natural_no_zero',
         'codigo'   => 'required|min_length[2]|max_length[20]|alpha_numeric|is_unique[alumnos.codigo,id,{id}]',
         'nombre'   => 'required|min_length[2]|max_length[100]|alpha_space',
         'apellido' => 'required|min_length[2]|max_length[100]|alpha_space',

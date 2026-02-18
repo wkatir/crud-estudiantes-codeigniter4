@@ -10,13 +10,11 @@ class Alumno_carreraModel extends Model
     protected $primaryKey = 'id';
     protected $allowedFields = ['nombre', 'apellido', 'telefono', 'codigo_carrera'];
 
-    // Obtener todas las carreras
     public function obtenerCarreras()
     {
         return $this->db->table('carrera')->get()->getResult();
     }
 
-    // Obtener alumnos por carrera
     public function obtenerAlumnosPorCarrera($codigo_carrera)
     {
         return $this->db->table('alumnos a')

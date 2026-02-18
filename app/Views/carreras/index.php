@@ -1,14 +1,14 @@
 <?= $this->extend('layouts/main') ?>
 
-<?= $this->section('title') ?>Listado de Alumnos<?= $this->endSection() ?>
+<?= $this->section('title') ?>Listado de Carreras<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3 class="mb-0">Listado de Productos - Wilmer Salazar SM100223</h3>
-                    <a href="<?= base_url('alumnos/create') ?>" class="btn btn-primary">Agregar alumno</a>
+                    <h3 class="mb-0">Listado de Carreras</h3>
+                    <a href="<?= base_url('carreras/create') ?>" class="btn btn-primary">Agregar carrera</a>
                 </div>
                 <div class="card-body">
 
@@ -33,27 +33,19 @@
                     <table id="registros" class="table table-bordered table-hover" cellspacing="0" width="100%">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Código</th>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Teléfono</th>
-                                <th>Carrera</th>
+                                <th>Nombre de Carrera</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($alumnos as $alumno): ?>
+                            <?php foreach ($carreras as $carrera): ?>
                             <tr>
-                                <td><?= esc($alumno['id']) ?></td>
-                                <td><?= esc($alumno['codigo']) ?></td>
-                                <td><?= esc($alumno['nombre']) ?></td>
-                                <td><?= esc($alumno['apellido']) ?></td>
-                                <td><?= esc($alumno['telefono']) ?></td>
-                                <td><?= esc($alumno['nombre_carrera'] ?? 'Sin carrera') ?></td>
+                                <td><?= esc($carrera->codigo_carrera) ?></td>
+                                <td><?= esc($carrera->nombre_carrera) ?></td>
                                 <td>
-                                    <a href="<?= base_url('alumnos/edit/' . $alumno['id']) ?>" class="btn btn-warning btn-sm">Editar</a>
-                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modalEliminar" data-url="<?= base_url('alumnos/delete/' . $alumno['id']) ?>">Eliminar</button>
+                                    <a href="<?= base_url('carreras/edit/' . $carrera->codigo_carrera) ?>" class="btn btn-warning btn-sm">Editar</a>
+                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modalEliminar" data-url="<?= base_url('carreras/delete/' . $carrera->codigo_carrera) ?>">Eliminar</button>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
@@ -74,7 +66,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    ¿Seguro que deseas eliminar este registro?
+                    ¿Seguro que deseas eliminar esta carrera?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
