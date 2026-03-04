@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Models\Alumno_carreraModel;
+use App\Models\CarreraModel;
 
 class Carreras extends BaseController
 {
@@ -10,12 +10,12 @@ class Carreras extends BaseController
 
     public function __construct()
     {
-        $this->carreraModel = new Alumno_carreraModel();
+        $this->carreraModel = new CarreraModel();
     }
 
     public function index()
     {
-        $data['carreras'] = $this->carreraModel->obtenerCarreras();
+        $data['carreras'] = $this->carreraModel->findAll();
         return view('carreras/index', $data);
     }
 
@@ -26,79 +26,63 @@ class Carreras extends BaseController
 
     public function store()
     {
-        $codigo = $this->request->getPost('codigo_carrera');
-        $nombre = $this->request->getPost('nombre_carrera');
+        $data = [
+            'codigo_carrera' => $this->request->getPost('codigo_carrera'),
+            'nombre_carrera' => $this->request->getPost('nombre_carrera'),
+        ];
 
-        if (empty($codigo) || empty($nombre)) {
-            return redirect()->back()->withInput()->with('errors', ['Todos los campos son obligatorios.']);
+        if (!$this->carreraModel->insert($data)) {
+            return redirect()->back()->withInput()->with('errors', $this->carreraModel->errors());
         }
-
-        $db = \Config\Database::connect();
-
-    
-        $existe = $db->table('carrera')->where('codigo_carrera', $codigo)->countAllResults();
-        if ($existe > 0) {
-            return redirect()->back()->withInput()->with('errors', ['El código de carrera ya existe.']);
-        }
-
-        $db->table('carrera')->insert([
-            'codigo_carrera' => $codigo,
-            'nombre_carrera' => $nombre,
-        ]);
 
         return redirect()->to('/carreras')->with('success', 'Carrera registrada correctamente.');
     }
 
     public function edit($codigo)
     {
-        $db = \Config\Database::connect();
-        $carrera = $db->table('carrera')->where('codigo_carrera', $codigo)->get()->getRowArray();
+        $data['carrera'] = $this->carreraModel->find($codigo);
 
-        if (!$carrera) {
+        if (!$data['carrera']) {
             return redirect()->to('/carreras')->with('error', 'Carrera no encontrada.');
         }
 
-        $data['carrera'] = $carrera;
         return view('carreras/edit', $data);
     }
 
     public function update($codigo)
     {
-        $nombre = $this->request->getPost('nombre_carrera');
-
-        if (empty($nombre)) {
-            return redirect()->back()->withInput()->with('errors', ['El nombre de la carrera es obligatorio.']);
-        }
-
-        $db = \Config\Database::connect();
-        $carrera = $db->table('carrera')->where('codigo_carrera', $codigo)->get()->getRowArray();
+        $carrera = $this->carreraModel->find($codigo);
 
         if (!$carrera) {
             return redirect()->to('/carreras')->with('error', 'Carrera no encontrada.');
         }
 
-        $db->table('carrera')->where('codigo_carrera', $codigo)->update([
-            'nombre_carrera' => $nombre,
-        ]);
+        $data = [
+            'nombre_carrera' => $this->request->getPost('nombre_carrera'),
+        ];
+
+        if (!$this->carreraModel->update($codigo, $data)) {
+            return redirect()->back()->withInput()->with('errors', $this->carreraModel->errors());
+        }
 
         return redirect()->to('/carreras')->with('success', 'Carrera actualizada correctamente.');
     }
 
     public function delete($codigo)
     {
-        $db = \Config\Database::connect();
-        $carrera = $db->table('carrera')->where('codigo_carrera', $codigo)->get()->getRowArray();
+        $carrera = $this->carreraModel->find($codigo);
 
         if (!$carrera) {
             return redirect()->to('/carreras')->with('error', 'Carrera no encontrada.');
         }
 
+        $db = \Config\Database::connect();
         $alumnos = $db->table('alumnos')->where('codigo_carrera', $codigo)->countAllResults();
         if ($alumnos > 0) {
             return redirect()->to('/carreras')->with('error', 'No se puede eliminar: hay ' . $alumnos . ' alumno(s) asignados a esta carrera.');
         }
 
-        $db->table('carrera')->where('codigo_carrera', $codigo)->delete();
+        $this->carreraModel->delete($codigo);
         return redirect()->to('/carreras')->with('success', 'Carrera eliminada correctamente.');
     }
 }

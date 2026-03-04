@@ -4,40 +4,45 @@
 
 <?= $this->section('content') ?>
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-12">
+            <?php if (session()->getFlashdata('success')): ?>
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <h5><i class="icon fas fa-check"></i> Exito</h5>
+                    <?= esc(session()->getFlashdata('success')) ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if (session()->getFlashdata('error')): ?>
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <h5><i class="icon fas fa-ban"></i> Error</h5>
+                    <?= esc(session()->getFlashdata('error')) ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3 class="mb-0">Listado de Productos - Wilmer Salazar SM100223</h3>
-                    <a href="<?= base_url('alumnos/create') ?>" class="btn btn-primary">Agregar alumno</a>
+                <div class="card-header">
+                    <h3 class="card-title">Listado de Alumnos</h3>
+                    <div class="card-tools">
+                        <a href="<?= base_url('alumnos/create') ?>" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus mr-1"></i> Agregar alumno
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
-
-                    <?php if (session()->getFlashdata('success')): ?>
-                        <div class="alert alert-success alert-dismissible fade show">
-                            <?= esc(session()->getFlashdata('success')) ?>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if (session()->getFlashdata('error')): ?>
-                        <div class="alert alert-danger alert-dismissible fade show">
-                            <?= esc(session()->getFlashdata('error')) ?>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                    <?php endif; ?>
-
                     <table id="registros" class="table table-bordered table-hover" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Código</th>
+                                <th>Codigo</th>
                                 <th>Nombre</th>
                                 <th>Apellido</th>
-                                <th>Teléfono</th>
+                                <th>Telefono</th>
                                 <th>Carrera</th>
                                 <th>Acciones</th>
                             </tr>
@@ -50,10 +55,18 @@
                                 <td><?= esc($alumno['nombre']) ?></td>
                                 <td><?= esc($alumno['apellido']) ?></td>
                                 <td><?= esc($alumno['telefono']) ?></td>
-                                <td><?= esc($alumno['nombre_carrera'] ?? 'Sin carrera') ?></td>
                                 <td>
-                                    <a href="<?= base_url('alumnos/edit/' . $alumno['id']) ?>" class="btn btn-warning btn-sm">Editar</a>
-                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modalEliminar" data-url="<?= base_url('alumnos/delete/' . $alumno['id']) ?>">Eliminar</button>
+                                    <span class="badge badge-info">
+                                        <?= esc($alumno['nombre_carrera'] ?? 'Sin carrera') ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="<?= base_url('alumnos/edit/' . $alumno['id']) ?>" class="btn btn-warning btn-sm" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modalEliminar" data-url="<?= base_url('alumnos/delete/' . $alumno['id']) ?>" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
@@ -64,21 +77,30 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+    <div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalEliminarLabel">Confirmar eliminación</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>Confirmar eliminacion
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    ¿Seguro que deseas eliminar este registro?
+                    <p>Seguro que deseas eliminar este registro?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <a href="#" id="btnConfirmarEliminar" class="btn btn-danger">Eliminar</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times mr-1"></i> Cancelar
+                    </button>
+                    <form id="formEliminar" method="post" action="" class="d-inline">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash mr-1"></i> Eliminar
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -100,7 +122,7 @@
                 emptyTable: "No hay datos disponibles",
                 paginate: {
                     first: "Primero",
-                    last: "Último",
+                    last: "Ultimo",
                     next: "Siguiente",
                     previous: "Anterior"
                 }
@@ -110,7 +132,7 @@
         $('#modalEliminar').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var url = button.data('url');
-            $('#btnConfirmarEliminar').attr('href', url);
+            $('#formEliminar').attr('action', url);
         });
     });
 </script>

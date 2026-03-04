@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\AlumnoModel;
-use App\Models\Alumno_carreraModel;
+use App\Models\CarreraModel;
 
 class Alumnos extends BaseController
 {
@@ -13,7 +13,7 @@ class Alumnos extends BaseController
     public function __construct()
     {
         $this->alumnoModel = new AlumnoModel();
-        $this->carreraModel = new Alumno_carreraModel();
+        $this->carreraModel = new CarreraModel();
     }
 
     public function index()
@@ -27,7 +27,7 @@ class Alumnos extends BaseController
 
     public function create()
     {
-        $data['carreras'] = $this->carreraModel->obtenerCarreras();
+        $data['carreras'] = $this->carreraModel->findAll();
         return view('alumnos/create', $data);
     }
 
@@ -56,7 +56,7 @@ class Alumnos extends BaseController
             return redirect()->to('/alumnos')->with('error', 'Alumno no encontrado.');
         }
 
-        $data['carreras'] = $this->carreraModel->obtenerCarreras();
+        $data['carreras'] = $this->carreraModel->findAll();
         return view('alumnos/edit', $data);
     }
 

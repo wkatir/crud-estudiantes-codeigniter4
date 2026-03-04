@@ -15,7 +15,8 @@ class AlumnoModel extends Model
         'codigo'   => 'required|min_length[2]|max_length[20]|alpha_numeric|is_unique[alumnos.codigo,id,{id}]',
         'nombre'   => 'required|min_length[2]|max_length[100]|alpha_space',
         'apellido' => 'required|min_length[2]|max_length[100]|alpha_space',
-        'telefono' => 'required|min_length[7]|max_length[15]|numeric',
+        'telefono'       => 'required|min_length[7]|max_length[15]|numeric',
+        'codigo_carrera' => 'required',
     ];
 
     protected $validationMessages = [
@@ -43,6 +44,9 @@ class AlumnoModel extends Model
             'min_length' => 'El teléfono debe tener al menos 7 dígitos.',
             'max_length' => 'El teléfono no puede exceder 15 dígitos.',
             'numeric'    => 'El teléfono solo puede contener números.',
+        ],
+        'codigo_carrera' => [
+            'required' => 'La carrera es obligatoria.',
         ],
     ];
 }

@@ -4,63 +4,74 @@
 
 <?= $this->section('content') ?>
     <div class="row">
-        <div class="col-lg-12">
-            <h2 class="text-center">Listado de Materias por Docente</h2>
-            <hr class="border border-primary border-3 opacity-75">
+        <div class="col-12">
+            <?php if (session()->getFlashdata('success')): ?>
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <h5><i class="icon fas fa-check"></i> Exito</h5>
+                    <?= esc(session()->getFlashdata('success')) ?>
+                </div>
+            <?php endif; ?>
 
+            <?php if (session()->getFlashdata('error')): ?>
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <h5><i class="icon fas fa-ban"></i> Error</h5>
+                    <?= esc(session()->getFlashdata('error')) ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h4>Seleccione el Docente</h4>
-
+                    <h3 class="card-title">Filtrar por Docente</h3>
+                </div>
+                <div class="card-body">
                     <form method="post" action="<?= base_url('horarios/filtrar') ?>">
+                        <?= csrf_field() ?>
                         <div class="input-group">
-                            <select name="id_docente" class="custom-select" required>
-                                <option value="">Seleccione una opción</option>
+                            <select name="id_docente" class="form-control" required>
+                                <option value="">Seleccione un docente</option>
                                 <?php foreach ($docentes as $d): ?>
-                                <option value="<?= $d->id_docente ?>" <?= isset($id_docente_seleccionado) && $id_docente_seleccionado == $d->id_docente ? 'selected' : '' ?>>
-                                    <?= $d->id_docente ?> - <?= esc($d->nombre_docente) ?>
+                                <option value="<?= esc($d->id_docente) ?>" <?= isset($id_docente_seleccionado) && $id_docente_seleccionado == $d->id_docente ? 'selected' : '' ?>>
+                                    <?= esc($d->id_docente) ?> - <?= esc($d->nombre_docente) ?>
                                 </option>
                                 <?php endforeach; ?>
                             </select>
                             <div class="input-group-append">
-                                <button class="btn btn-secondary" type="submit">Buscar</button>
+                                <button class="btn btn-secondary" type="submit">
+                                    <i class="fas fa-search mr-1"></i> Buscar
+                                </button>
                             </div>
                         </div>
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
 
+    <?php if (!empty($horarios)): ?>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Resultados</h3>
+                </div>
                 <div class="card-body">
-
-                    <?php if (session()->getFlashdata('success')): ?>
-                        <div class="alert alert-success alert-dismissible fade show">
-                            <?= esc(session()->getFlashdata('success')) ?>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if (session()->getFlashdata('error')): ?>
-                        <div class="alert alert-danger alert-dismissible fade show">
-                            <?= esc(session()->getFlashdata('error')) ?>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if (!empty($horarios)): ?>
                     <table id="registros" class="table table-bordered table-hover" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Id_docente</th>
-                                <th>Nombre del docente</th>
-                                <th>Id_materia</th>
-                                <th>Nombre de materias</th>
+                                <th>ID Docente</th>
+                                <th>Nombre Docente</th>
+                                <th>ID Materia</th>
+                                <th>Materia</th>
                                 <th>Dia</th>
-                                <th>Horario inicio</th>
-                                <th>Hora fin</th>
+                                <th>Hora Inicio</th>
+                                <th>Hora Fin</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -76,35 +87,53 @@
                                 <td><?= esc($h->hora_inicio) ?></td>
                                 <td><?= esc($h->hora_fin) ?></td>
                                 <td>
-                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modalEliminar" data-url="<?= base_url('horarios/delete/' . $h->id) ?>">Eliminar</button>
+                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modalEliminar" data-url="<?= base_url('horarios/delete/' . $h->id) ?>" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
-                    <?php else: ?>
-                    <p>No se encontraron resultados.</p>
-                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
+    <?php elseif (isset($id_docente_seleccionado)): ?>
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h5><i class="icon fas fa-info"></i> Informacion</h5>
+                No se encontraron horarios para el docente seleccionado.
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
 
-    <div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+    <div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalEliminarLabel">Confirmar eliminación</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>Confirmar eliminacion
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    ¿Seguro que deseas eliminar este horario?
+                    <p>Seguro que deseas eliminar este horario?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <a href="#" id="btnConfirmarEliminar" class="btn btn-danger">Eliminar</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times mr-1"></i> Cancelar
+                    </button>
+                    <form id="formEliminar" method="post" action="" class="d-inline">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash mr-1"></i> Eliminar
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -126,7 +155,7 @@
                 emptyTable: "No hay datos disponibles",
                 paginate: {
                     first: "Primero",
-                    last: "Último",
+                    last: "Ultimo",
                     next: "Siguiente",
                     previous: "Anterior"
                 }
@@ -136,7 +165,7 @@
         $('#modalEliminar').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var url = button.data('url');
-            $('#btnConfirmarEliminar').attr('href', url);
+            $('#formEliminar').attr('action', url);
         });
     });
 </script>

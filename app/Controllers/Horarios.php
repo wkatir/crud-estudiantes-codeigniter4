@@ -34,9 +34,19 @@ class Horarios extends BaseController
             return redirect()->back()->withInput()->with('error', 'Debe seleccionar un docente.');
         }
 
+        $materiasLlenas = array_filter($materias);
+        if (count($materiasLlenas) > 5) {
+            return redirect()->back()->withInput()->with('error', 'Solo puede inscribir un maximo de 5 materias.');
+        }
+
+        $errores = [];
         $insertados = 0;
         for ($i = 0; $i < count($materias); $i++) {
             if (!empty($materias[$i]) && !empty($horas_inicio[$i]) && !empty($horas_fin[$i])) {
+                if ($horas_inicio[$i] >= $horas_fin[$i]) {
+                    $errores[] = 'Materia ' . ($i + 1) . ': la hora de inicio debe ser anterior a la hora de fin.';
+                    continue;
+                }
                 $this->horarioModel->insert([
                     'id_docente'  => $id_docente,
                     'id_materia'  => $materias[$i],
@@ -46,6 +56,10 @@ class Horarios extends BaseController
                 ]);
                 $insertados++;
             }
+        }
+
+        if (!empty($errores)) {
+            return redirect()->back()->withInput()->with('error', implode(' ', $errores));
         }
 
         if ($insertados === 0) {

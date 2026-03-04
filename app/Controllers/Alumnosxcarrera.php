@@ -3,27 +3,30 @@
 namespace App\Controllers;
 
 use App\Models\Alumno_carreraModel;
+use App\Models\CarreraModel;
 
 class Alumnosxcarrera extends BaseController
 {
     public function index()
     {
-        $model = new Alumno_carreraModel();
+        $carreraModel = new CarreraModel();
 
-        $data['carreras'] = $model->obtenerCarreras();
+        $data['carreras'] = $carreraModel->findAll();
         $data['alumnos'] = [];
 
-        return view('/alumnos/alumnos_view', $data);
+        return view('alumnos/alumnos_view', $data);
     }
 
     public function filtrar()
     {
-        $model = new Alumno_carreraModel();
+        $carreraModel = new CarreraModel();
+        $alumnoCarreraModel = new Alumno_carreraModel();
         $codigo_carrera = $this->request->getPost('codigo_carrera');
 
-        $data['carreras'] = $model->obtenerCarreras();
-        $data['alumnos'] = $model->obtenerAlumnosPorCarrera($codigo_carrera);
+        $data['carreras'] = $carreraModel->findAll();
+        $data['alumnos'] = $alumnoCarreraModel->obtenerAlumnosPorCarrera($codigo_carrera);
+        $data['codigo_carrera_seleccionada'] = $codigo_carrera;
 
-        return view('/alumnos/alumnos_view', $data);
+        return view('alumnos/alumnos_view', $data);
     }
 }
