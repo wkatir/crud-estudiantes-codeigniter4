@@ -47,45 +47,73 @@
                             </div>
                         </div>
 
-                        <hr>
-
-                        <?php for ($i = 1; $i <= 5; $i++): ?>
-                        <div class="form-row align-items-end mb-3">
-                            <div class="col-md-4">
-                                <label>Materia <?= $i ?></label>
-                                <select name="materia[]" class="form-control">
-                                    <option value="">-- Ninguna --</option>
-                                    <?php foreach ($materias as $m): ?>
-                                    <option value="<?= esc($m->id_materia) ?>"><?= esc($m->nombre_materia) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label>Dia</label>
-                                <select name="dia[]" class="form-control">
-                                    <option value="Lunes">Lunes</option>
-                                    <option value="Martes">Martes</option>
-                                    <option value="Miércoles">Miércoles</option>
-                                    <option value="Jueves">Jueves</option>
-                                    <option value="Viernes">Viernes</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label>Hora inicio</label>
-                                <input type="time" name="hora_inicio[]" class="form-control">
-                            </div>
-                            <div class="col-md-3">
-                                <label>Hora fin</label>
-                                <input type="time" name="hora_fin[]" class="form-control">
+                        <div id="materias-actuales" class="d-none">
+                            <div class="callout callout-info">
+                                <h5>Materias ya inscritas: <span id="conteo-materias" class="badge badge-primary">0</span> / 5</h5>
+                                <table class="table table-sm table-bordered mt-2" id="tabla-materias-actuales">
+                                    <thead>
+                                        <tr>
+                                            <th>Materia</th>
+                                            <th>Dia</th>
+                                            <th>Hora Inicio</th>
+                                            <th>Hora Fin</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                         </div>
-                        <?php endfor; ?>
 
-                        <hr>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save mr-1"></i> Guardar Inscripcion
-                        </button>
-                        <a href="<?= base_url('horarios/listado') ?>" class="btn btn-secondary">
+                        <div id="alerta-lleno" class="d-none">
+                            <div class="callout callout-warning">
+                                <h5>Este docente ya tiene 5 materias inscritas</h5>
+                                <p class="mb-0">No se pueden agregar mas. Elimine alguna desde el listado si desea cambiar.</p>
+                            </div>
+                        </div>
+
+                        <div id="seccion-nuevas" class="d-none">
+                            <hr>
+                            <p>Espacios disponibles: <strong id="disponibles">5</strong></p>
+
+                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <div class="form-row align-items-end mb-3 fila-materia" data-fila="<?= $i ?>">
+                                <div class="col-md-4">
+                                    <label>Materia <?= $i ?></label>
+                                    <select name="materia[]" class="form-control">
+                                        <option value="">-- Ninguna --</option>
+                                        <?php foreach ($materias as $m): ?>
+                                        <option value="<?= esc($m->id_materia) ?>"><?= esc($m->nombre_materia) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Dia</label>
+                                    <select name="dia[]" class="form-control">
+                                        <option value="Lunes">Lunes</option>
+                                        <option value="Martes">Martes</option>
+                                        <option value="Miércoles">Miércoles</option>
+                                        <option value="Jueves">Jueves</option>
+                                        <option value="Viernes">Viernes</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Hora inicio</label>
+                                    <input type="time" name="hora_inicio[]" class="form-control">
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Hora fin</label>
+                                    <input type="time" name="hora_fin[]" class="form-control">
+                                </div>
+                            </div>
+                            <?php endfor; ?>
+
+                            <hr>
+                            <button type="submit" class="btn btn-primary" id="btn-guardar">
+                                <i class="fas fa-save mr-1"></i> Guardar Inscripcion
+                            </button>
+                        </div>
+
+                        <a href="<?= base_url('horarios/listado') ?>" class="btn btn-secondary mt-3">
                             <i class="fas fa-list mr-1"></i> Ver Listado
                         </a>
                     </form>
@@ -93,4 +121,64 @@
             </div>
         </div>
     </div>
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<script>
+    $(document).ready(function(){
+        $('#id_docente').on('change', function(){
+            var id = $(this).val();
+            var panel = $('#materias-actuales');
+            var tbody = $('#tabla-materias-actuales tbody');
+            var seccionNuevas = $('#seccion-nuevas');
+            var alertaLleno = $('#alerta-lleno');
+
+            // Ocultar todo y resetear
+            panel.addClass('d-none');
+            seccionNuevas.addClass('d-none');
+            alertaLleno.addClass('d-none');
+            $('.fila-materia').hide().find('select, input').val('');
+
+            if (!id) {
+                return;
+            }
+
+            $.getJSON('<?= base_url('horarios/materias-docente') ?>/' + id, function(data){
+                tbody.empty();
+                var total = data.length;
+                var disponibles = 5 - total;
+
+                // Mostrar materias ya inscritas
+                if (total > 0) {
+                    $.each(data, function(i, h){
+                        tbody.append(
+                            '<tr><td>' + h.nombre_materia + '</td>' +
+                            '<td>' + h.dia + '</td>' +
+                            '<td>' + h.hora_inicio + '</td>' +
+                            '<td>' + h.hora_fin + '</td></tr>'
+                        );
+                    });
+                    panel.removeClass('d-none');
+                }
+
+                $('#conteo-materias').text(total);
+
+                if (disponibles <= 0) {
+                    // Ya tiene 5, no puede agregar mas
+                    alertaLleno.removeClass('d-none');
+                } else {
+                    // Mostrar solo las filas disponibles
+                    $('#disponibles').text(disponibles);
+                    seccionNuevas.removeClass('d-none');
+                    $('.fila-materia').each(function(){
+                        var fila = parseInt($(this).data('fila'));
+                        if (fila <= disponibles) {
+                            $(this).show();
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
 <?= $this->endSection() ?>

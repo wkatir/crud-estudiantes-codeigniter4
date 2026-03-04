@@ -45,6 +45,7 @@ $routes->get('/horarios/inscripcion', 'Horarios::inscripcion');
 $routes->post('/horarios/guardar', 'Horarios::guardarInscripcion');
 $routes->get('/horarios/listado', 'Horarios::listado');
 $routes->post('/horarios/filtrar', 'Horarios::filtrar');
+$routes->get('/horarios/materias-docente/(:num)', 'Horarios::materiasDocente/$1');
 $routes->post('/horarios/delete/(:num)', 'Horarios::delete/$1');
 
 // Alumnos por materia

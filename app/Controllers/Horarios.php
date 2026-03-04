@@ -13,7 +13,6 @@ class Horarios extends BaseController
         $this->horarioModel = new HorarioModel();
     }
 
-    // Formulario de inscripción de materias por docente
     public function inscripcion()
     {
         $data['docentes'] = $this->horarioModel->obtenerDocentes();
@@ -21,7 +20,6 @@ class Horarios extends BaseController
         return view('horarios/inscripcion', $data);
     }
 
-    // Guardar inscripción de materias por docente
     public function guardarInscripcion()
     {
         $id_docente = $this->request->getPost('id_docente');
@@ -35,18 +33,49 @@ class Horarios extends BaseController
         }
 
         $materiasLlenas = array_filter($materias);
-        if (count($materiasLlenas) > 5) {
-            return redirect()->back()->withInput()->with('error', 'Solo puede inscribir un maximo de 5 materias.');
+        $horariosExistentes = $this->horarioModel->obtenerMateriasPorDocente($id_docente);
+        $existentes = count($horariosExistentes);
+        $totalFinal = $existentes + count($materiasLlenas);
+
+        if ($totalFinal > 5) {
+            $disponibles = 5 - $existentes;
+            return redirect()->back()->withInput()->with('error', 'El docente ya tiene ' . $existentes . ' materia(s) inscrita(s). Solo puede agregar ' . $disponibles . ' mas.');
+        }
+
+        $bloquesOcupados = [];
+        foreach ($horariosExistentes as $h) {
+            $bloquesOcupados[] = [
+                'dia'         => $h->dia,
+                'hora_inicio' => $h->hora_inicio,
+                'hora_fin'    => $h->hora_fin,
+                'nombre'      => $h->nombre_materia,
+            ];
         }
 
         $errores = [];
         $insertados = 0;
         for ($i = 0; $i < count($materias); $i++) {
             if (!empty($materias[$i]) && !empty($horas_inicio[$i]) && !empty($horas_fin[$i])) {
+                $num = $i + 1;
+
                 if ($horas_inicio[$i] >= $horas_fin[$i]) {
-                    $errores[] = 'Materia ' . ($i + 1) . ': la hora de inicio debe ser anterior a la hora de fin.';
+                    $errores[] = 'Materia ' . $num . ': la hora de inicio debe ser anterior a la hora de fin.';
                     continue;
                 }
+
+                $choque = false;
+                foreach ($bloquesOcupados as $bloque) {
+                    if ($bloque['dia'] === $dias[$i] && $horas_inicio[$i] < $bloque['hora_fin'] && $horas_fin[$i] > $bloque['hora_inicio']) {
+                        $errores[] = 'Materia ' . $num . ': el horario (' . $dias[$i] . ' ' . $horas_inicio[$i] . '-' . $horas_fin[$i] . ') choca con "' . $bloque['nombre'] . '" (' . $bloque['hora_inicio'] . '-' . $bloque['hora_fin'] . ').';
+                        $choque = true;
+                        break;
+                    }
+                }
+
+                if ($choque) {
+                    continue;
+                }
+
                 $this->horarioModel->insert([
                     'id_docente'  => $id_docente,
                     'id_materia'  => $materias[$i],
@@ -54,6 +83,14 @@ class Horarios extends BaseController
                     'hora_inicio' => $horas_inicio[$i],
                     'hora_fin'    => $horas_fin[$i],
                 ]);
+
+                $bloquesOcupados[] = [
+                    'dia'         => $dias[$i],
+                    'hora_inicio' => $horas_inicio[$i],
+                    'hora_fin'    => $horas_fin[$i],
+                    'nombre'      => 'Materia ' . $num,
+                ];
+
                 $insertados++;
             }
         }
@@ -69,7 +106,6 @@ class Horarios extends BaseController
         return redirect()->to('/horarios/inscripcion')->with('success', $insertados . ' horario(s) registrado(s) correctamente.');
     }
 
-    // Listado de materias por docente
     public function listado()
     {
         $data['docentes'] = $this->horarioModel->obtenerDocentes();
@@ -77,7 +113,6 @@ class Horarios extends BaseController
         return view('horarios/listado', $data);
     }
 
-    // Filtrar materias por docente
     public function filtrar()
     {
         $id_docente = $this->request->getPost('id_docente');
@@ -89,7 +124,12 @@ class Horarios extends BaseController
         return view('horarios/listado', $data);
     }
 
-    // Eliminar un horario individual
+    public function materiasDocente($id_docente)
+    {
+        $horarios = $this->horarioModel->obtenerMateriasPorDocente($id_docente);
+        return $this->response->setJSON($horarios);
+    }
+
     public function delete($id)
     {
         $horario = $this->horarioModel->find($id);
