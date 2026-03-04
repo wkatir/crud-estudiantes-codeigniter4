@@ -35,7 +35,7 @@ class Carreras extends BaseController
 
         $db = \Config\Database::connect();
 
-        // Verificar si ya existe
+    
         $existe = $db->table('carrera')->where('codigo_carrera', $codigo)->countAllResults();
         if ($existe > 0) {
             return redirect()->back()->withInput()->with('errors', ['El código de carrera ya existe.']);
@@ -93,7 +93,6 @@ class Carreras extends BaseController
             return redirect()->to('/carreras')->with('error', 'Carrera no encontrada.');
         }
 
-        // Verificar si hay alumnos con esta carrera
         $alumnos = $db->table('alumnos')->where('codigo_carrera', $codigo)->countAllResults();
         if ($alumnos > 0) {
             return redirect()->to('/carreras')->with('error', 'No se puede eliminar: hay ' . $alumnos . ' alumno(s) asignados a esta carrera.');

@@ -29,11 +29,27 @@
             <li class="nav-item">
                 <a class="nav-link" href="<?= base_url('alumnos') ?>">Alumnos</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="<?= base_url('carreras') ?>">Carreras</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdownAgregar" role="button" data-toggle="dropdown">
+                    Agregar/datos
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="<?= base_url('carreras') ?>">Carreras</a>
+                    <a class="dropdown-item" href="<?= base_url('materias') ?>">Materias</a>
+                    <a class="dropdown-item" href="<?= base_url('docentes') ?>">Docentes</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="<?= base_url('horarios/inscripcion') ?>">Inscripción materias por docente</a>
+                </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="<?= base_url('alumnosxcarrera') ?>">Alumnos por Carrera</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdownListado" role="button" data-toggle="dropdown">
+                    Listado/reportes
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="<?= base_url('alumnosxcarrera') ?>">Alumnos por Carrera</a>
+                    <a class="dropdown-item" href="<?= base_url('alumnosxmateria') ?>">Alumnos por Materia</a>
+                    <a class="dropdown-item" href="<?= base_url('horarios/listado') ?>">Materias por Docente</a>
+                </div>
             </li>
         </ul>
     </div>
