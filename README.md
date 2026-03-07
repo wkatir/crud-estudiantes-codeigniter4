@@ -1,68 +1,103 @@
-# CodeIgniter 4 Application Starter
+# Sistema de Gestión Académica — CodeIgniter 4
 
-## What is CodeIgniter?
+Un CRUD completo para administrar estudiantes, docentes, materias, carreras y horarios, construido con CodeIgniter 4 y corriendo sobre XAMPP.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+---
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+## ¿Qué hace este proyecto?
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+Básicamente es un sistema para manejar la información académica de una institución. Desde registrar alumnos hasta asignarle horarios a los docentes sin que se crucen, el sistema cubre los casos de uso más comunes de administración escolar.
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+### Módulos incluidos
 
-## Installation & updates
+- **Alumnos** — registro, edición y eliminación de estudiantes con su carrera asignada
+- **Carreras** — catálogo de programas académicos
+- **Docentes** — gestión del personal docente
+- **Materias** — catálogo de materias disponibles
+- **Horarios** — asignación de materias a docentes con validación de choques de horario (máx. 5 materias por docente)
+- **Alumnos por materia** — consulta de qué alumnos están en cada materia
+- **Alumnos por carrera** — consulta de alumnos agrupados por programa
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+---
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+## Tecnologías
 
-## Setup
+| Herramienta | Para qué se usa |
+|---|---|
+| PHP 8.1+ | Lenguaje base |
+| CodeIgniter 4 | Framework MVC |
+| MySQL | Base de datos |
+| Bootstrap 5 | Estilos y componentes UI |
+| DataTables | Tablas interactivas con búsqueda y paginación |
+| XAMPP | Entorno local de desarrollo |
+| Composer | Manejo de dependencias PHP |
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+---
 
-## Important Change with index.php
+## Instalación local
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+**Requisitos:** XAMPP (Apache + MySQL), PHP 8.1 o superior, Composer.
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+```bash
+# 1. Clonar el repositorio dentro de htdocs
+git clone <url-del-repo> C:/xampp/htdocs/crud-estudiantes-codeigniter4
 
-**Please** read the user guide for a better explanation of how CI4 works!
+# 2. Instalar dependencias
+composer install
 
-## Repository Management
+# 3. Configurar el entorno
+cp env .env
+```
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+En el archivo `.env`, ajustá la conexión a la base de datos:
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+```
+database.default.hostname = localhost
+database.default.database = nombre_de_tu_bd
+database.default.username = root
+database.default.password =
+database.default.DBDriver = MySQLi
+```
 
-## Server Requirements
+Luego importá el SQL de la base de datos desde phpMyAdmin o la línea de comandos, y accedé desde:
 
-PHP version 8.1 or higher is required, with the following extensions installed:
+```
+http://localhost/crud-estudiantes-codeigniter4/public
+```
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+---
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> - The end of life date for PHP 8.1 will be December 31, 2025.
+## Estructura del proyecto
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+```
+app/
+├── Controllers/      # Lógica de cada módulo (Alumnos, Docentes, Horarios, etc.)
+├── Models/           # Modelos con reglas de validación y queries
+└── Views/
+    ├── layouts/      # Layout principal compartido
+    ├── alumnos/
+    ├── carreras/
+    ├── docentes/
+    ├── materias/
+    ├── horarios/
+    └── alumnosxmateria/
+```
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+---
+
+## Algunas decisiones de implementación
+
+- La validación de choques de horario se hace en el controller antes de insertar, comparando día y rangos de hora contra los horarios ya registrados del docente.
+- Los formularios de horarios son dinámicos: se pueden agregar múltiples materias en una sola inscripción.
+- Las eliminaciones usan POST en lugar de DELETE para mayor compatibilidad con formularios HTML sin JavaScript extra.
+- Se usa `left join` en la consulta de alumnos para mostrarlos aunque no tengan carrera asignada.
+
+---
+
+## Autor
+
+Hecho por **Wilmer Henrry Salazar Martinez** — gracias por tomarte el tiempo de revisar este proyecto.
+
+---
+
+> Proyecto académico desarrollado con CodeIgniter 4. Libre de usar o adaptar.
