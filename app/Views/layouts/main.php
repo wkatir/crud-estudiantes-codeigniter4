@@ -63,8 +63,8 @@
                         </a>
                     </li>
 
-                    <li class="nav-item <?= strpos(current_url(), 'carreras') !== false || strpos(current_url(), 'materias') !== false || strpos(current_url(), 'docentes') !== false || strpos(current_url(), 'horarios/inscripcion') !== false ? 'menu-open' : '' ?>">
-                        <a href="#" class="nav-link <?= strpos(current_url(), 'carreras') !== false || strpos(current_url(), 'materias') !== false || strpos(current_url(), 'docentes') !== false || strpos(current_url(), 'horarios/inscripcion') !== false ? 'active' : '' ?>">
+                    <li class="nav-item <?= strpos(current_url(), 'carreras') !== false || strpos(current_url(), 'materias') !== false || strpos(current_url(), 'docentes') !== false || strpos(current_url(), 'horarios/inscripcion') !== false || strpos(current_url(), 'matricula') !== false ? 'menu-open' : '' ?>">
+                        <a href="#" class="nav-link <?= strpos(current_url(), 'carreras') !== false || strpos(current_url(), 'materias') !== false || strpos(current_url(), 'docentes') !== false || strpos(current_url(), 'horarios/inscripcion') !== false || strpos(current_url(), 'matricula') !== false ? 'active' : '' ?>">
                             <i class="nav-icon fas fa-plus-circle"></i>
                             <p>
                                 Agregar/Datos
@@ -96,11 +96,17 @@
                                     <p>Inscripcion Materias</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('matricula/inscripcion') ?>" class="nav-link <?= strpos(current_url(), 'matricula') !== false ? 'active' : '' ?>">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Inscripcion Alumnos</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
-                    <li class="nav-item <?= strpos(current_url(), 'alumnosxcarrera') !== false || strpos(current_url(), 'alumnosxmateria') !== false || strpos(current_url(), 'horarios/listado') !== false ? 'menu-open' : '' ?>">
-                        <a href="#" class="nav-link <?= strpos(current_url(), 'alumnosxcarrera') !== false || strpos(current_url(), 'alumnosxmateria') !== false || strpos(current_url(), 'horarios/listado') !== false ? 'active' : '' ?>">
+                    <li class="nav-item <?= strpos(current_url(), 'alumnosxcarrera') !== false || strpos(current_url(), 'alumnosxmateria') !== false || strpos(current_url(), 'horarios/listado') !== false || strpos(current_url(), 'materiasxalumno') !== false || strpos(current_url(), 'notas') !== false ? 'menu-open' : '' ?>">
+                        <a href="#" class="nav-link <?= strpos(current_url(), 'alumnosxcarrera') !== false || strpos(current_url(), 'alumnosxmateria') !== false || strpos(current_url(), 'horarios/listado') !== false || strpos(current_url(), 'materiasxalumno') !== false || strpos(current_url(), 'notas') !== false ? 'active' : '' ?>">
                             <i class="nav-icon fas fa-chart-bar"></i>
                             <p>
                                 Listado/Reportes
@@ -124,6 +130,18 @@
                                 <a href="<?= base_url('horarios/listado') ?>" class="nav-link <?= strpos(current_url(), 'horarios/listado') !== false ? 'active' : '' ?>">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Materias por Docente</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('materiasxalumno') ?>" class="nav-link <?= strpos(current_url(), 'materiasxalumno') !== false ? 'active' : '' ?>">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Materias por Alumno</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('notas') ?>" class="nav-link <?= strpos(current_url(), 'notas') !== false ? 'active' : '' ?>">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Notas por Materia</p>
                                 </a>
                             </li>
                         </ul>

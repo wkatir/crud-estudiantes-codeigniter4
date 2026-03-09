@@ -51,3 +51,18 @@ $routes->post('/horarios/delete/(:num)', 'Horarios::delete/$1');
 // Alumnos por materia
 $routes->get('/alumnosxmateria', 'AlumnosxMateria::index');
 $routes->post('/alumnosxmateria/filtrar', 'AlumnosxMateria::filtrar');
+
+// Matricula - Inscripcion de materias por alumno
+$routes->get('/matricula/inscripcion', 'Matricula::inscripcion');
+$routes->post('/matricula/guardar', 'Matricula::guardarInscripcion');
+$routes->get('/matricula/materias-alumno/(:num)', 'Matricula::materiasAlumno/$1');
+$routes->post('/matricula/delete/(:num)', 'Matricula::eliminar/$1');
+
+// Materias por alumno
+$routes->get('/materiasxalumno', 'MateriasxAlumno::index');
+$routes->post('/materiasxalumno/filtrar', 'MateriasxAlumno::filtrar');
+
+// Notas
+$routes->get('/notas', 'Notas::index');
+$routes->post('/notas/filtrar', 'Notas::filtrar');
+$routes->post('/notas/guardar', 'Notas::guardar');
