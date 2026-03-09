@@ -1,4 +1,9 @@
 #-------------------------
+# Claude Code local settings (may contain sensitive data)
+#-------------------------
+.claude/settings.local.json
+
+#-------------------------
 # Operating Specific Junk Files
 #-------------------------
 
